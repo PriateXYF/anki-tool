@@ -1,14 +1,42 @@
-const tool = require('./lib/tool')
+import { tool, all_types } from './lib/tool.js'
+
 var ankitool = {}
-const default_config = {
-	preproccess : true
-}
-ankitool.md2txt = function(mdstr, config=default_config){
-	// console.log(marked.parse(mdstr))
+// 解析markdown
+ankitool.parseMd = function (mdstr) {
 	const md_fragment_list = tool.getMdFragments(mdstr)
-	// console.log(md_fragment_list)
-	const res = md_fragment_list.map((item) => tool.parseMd(item))
-	console.log(res[2])
+	var res = {}
+	md_fragment_list.forEach((md_fragment) => {
+		res[md_fragment.type] = tool.parseMd(md_fragment).content
+	})
+	return res
 }
 
-module.exports = ankitool
+// 将markdown转为txt文本
+ankitool.md2txt = function (mdstr) {
+	const prasedMd = this.parseMd(mdstr)
+	var res = {}
+	for (const key in prasedMd) {
+		if (Object.hasOwnProperty.call(prasedMd, key)) {
+			const element = prasedMd[key];
+			switch (key) {
+				case 'cloze':
+					res[key] = element
+					break;
+				case 'question':
+					res[key] = element.map(item=>`${item.question}\t${item.answer}`)
+					break;
+				case 'word':
+					res[key] = element.map(item=>`${item.question}\t${item.answer}`)
+					break;
+				case 'wordlist':
+					res[key] = element
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	return res
+}
+
+export { ankitool }
