@@ -113,8 +113,8 @@ parse.parseMdWord = function (htmlstr) {
     })
 }
 
-// 解析wordlist
-parse.parseMdWordList = function (htmlstr) {
+// 解析clozelist
+parse.parseMdClozeList = function (htmlstr) {
     const $ = this.preproccess(htmlstr)
     return $('ul').map((_, item) => {
         $(item).find('code').each((_, code) => {

@@ -28,7 +28,7 @@ ankitool.md2txt = function (mdstr) {
 				case 'word':
 					res[key] = element.map(item => `${item.question}\t${item.answer}`)
 					break;
-				case 'wordlist':
+				case 'clozelist':
 					res[key] = element
 					break;
 				default:
