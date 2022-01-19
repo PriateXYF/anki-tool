@@ -34,7 +34,7 @@ console.log(anki.question)
 1. cloze
 2. question
 3. word
-4. wordlist
+4. clozelist
 
 每个模板的起始符与结束符都遵循以下规则：
 
