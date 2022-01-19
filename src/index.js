@@ -1,6 +1,7 @@
-import { tool, all_types } from './lib/tool.js'
+const { tool } = require('./lib/tool.js')
 
-var ankitool = {}
+const ankitool = {}
+
 // 解析markdown
 ankitool.parseMd = function (mdstr) {
 	const md_fragment_list = tool.getMdFragments(mdstr)
@@ -10,7 +11,6 @@ ankitool.parseMd = function (mdstr) {
 	})
 	return res
 }
-
 // 将markdown转为txt文本
 ankitool.md2txt = function (mdstr) {
 	const prasedMd = this.parseMd(mdstr)
@@ -23,10 +23,10 @@ ankitool.md2txt = function (mdstr) {
 					res[key] = element
 					break;
 				case 'question':
-					res[key] = element.map(item=>`${item.question}\t${item.answer}`)
+					res[key] = element.map(item => `${item.question}\t${item.answer}`)
 					break;
 				case 'word':
-					res[key] = element.map(item=>`${item.question}\t${item.answer}`)
+					res[key] = element.map(item => `${item.question}\t${item.answer}`)
 					break;
 				case 'wordlist':
 					res[key] = element
@@ -39,4 +39,5 @@ ankitool.md2txt = function (mdstr) {
 	return res
 }
 
-export { ankitool }
+
+module.exports = { ankitool }

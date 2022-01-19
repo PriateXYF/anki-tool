@@ -1,5 +1,6 @@
-import { marked } from 'marked'
-import {parse} from './parse.js'
+const marked = require('marked')
+const parse = require('./parse')
+
 var tool = {}
 
 // 所有可处理的类型
@@ -51,4 +52,4 @@ tool.parseMd = function (item) {
     return res
 }
 
-export { tool , all_types }
+module.exports = { tool , all_types }
