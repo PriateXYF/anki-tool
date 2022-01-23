@@ -1,12 +1,12 @@
 const cheerio = require('cheerio')
-
+var _ = require('lodash');
 var parse = {}
 
 // 预处理
-parse.preproccess = function(htmlstr){
+parse.preproccess = function(htmlstr) {
     var $ = cheerio.load(htmlstr)
     // 处理代码
-    $('code').each((_,code)=>{
+    $('code').each((_, code) => {
         var raw_code = $(code).html().trim().replace(/\n/g, '<br>').replace(/\t/g, '    ')
         raw_code = Buffer.from(raw_code, 'utf-8').toString('base64');
         $(code).html(`œœ${raw_code}œœ`)
@@ -14,54 +14,54 @@ parse.preproccess = function(htmlstr){
     htmlstr = $.html()
     // 处理多行公式
     var reg = RegExp(/\$\$([\s\S]*?)\$\$/);
-    while(htmlstr.match(reg)){
+    while (htmlstr.match(reg)) {
         var replace_str = htmlstr.match(reg)[1].replace(/\t/g, ' ').replace(/\n/g, ' ').replace(/</g, '\\lt ').replace(/>/g, '\\gt ')
         replace_str = Buffer.from(replace_str, 'utf-8').toString('base64');
-        htmlstr = htmlstr.replace(htmlstr.match(reg)[0],`¢¢${replace_str}¢¢`)
+        htmlstr = htmlstr.replace(htmlstr.match(reg)[0], `¢¢${replace_str}¢¢`)
     }
     // 处理单行公式
     reg = RegExp(/\$(.*?)\$/);
-    while(htmlstr.match(reg)){
+    while (htmlstr.match(reg)) {
         var replace_str = htmlstr.match(reg)[1].replace(/\t/g, '  ').replace(/</g, '\\lt ').replace(/>/g, '\\gt ')
         replace_str = Buffer.from(replace_str, 'utf-8').toString('base64');
-        htmlstr = htmlstr.replace(htmlstr.match(reg)[0],`¡¡${replace_str}¡¡`)
+        htmlstr = htmlstr.replace(htmlstr.match(reg)[0], `¡¡${replace_str}¡¡`)
     }
     $ = cheerio.load(htmlstr)
     return $
 }
 
 // 后处理
-parse.postproccess = function(htmlstr){
+parse.postproccess = function(htmlstr) {
     htmlstr = htmlstr.trim().replace(/\n\n/g, '<br/>').replace(/\n/g, ' ').replace(/\t/g, '  ')
     // 恢复单行公式
     var reg = RegExp(/¡¡(.*?)¡¡/);
-    while(htmlstr.match(reg)){
+    while (htmlstr.match(reg)) {
         var replace_str = htmlstr.match(reg)[1]
         replace_str = Buffer.from(replace_str, 'base64').toString('utf-8')
-        htmlstr = htmlstr.replace(htmlstr.match(reg)[0],`\\(${replace_str}\\)`)
+        htmlstr = htmlstr.replace(htmlstr.match(reg)[0], `\\(${replace_str}\\)`)
     }
     // 恢复多行公式
     reg = RegExp(/¢¢(.*?)¢¢/);
-    while(htmlstr.match(reg)){
+    while (htmlstr.match(reg)) {
         var replace_str = htmlstr.match(reg)[1]
         replace_str = Buffer.from(replace_str, 'base64').toString('utf-8')
-        if(replace_str.indexOf("\begin{align}") >= 0)
-            htmlstr = htmlstr.replace(htmlstr.match(reg)[0],`\\[${replace_str}\\]`)
-        else htmlstr = htmlstr.replace(htmlstr.match(reg)[0],`\\[\\begin{align}${replace_str}\\end{align}\\]`)
+        if (replace_str.indexOf("\begin{align}") >= 0)
+            htmlstr = htmlstr.replace(htmlstr.match(reg)[0], `\\[${replace_str}\\]`)
+        else htmlstr = htmlstr.replace(htmlstr.match(reg)[0], `\\[\\begin{align}${replace_str}\\end{align}\\]`)
     }
     // 恢复代码块
     reg = RegExp(/œœ(.*?)œœ/);
-    while(htmlstr.match(reg)){
+    while (htmlstr.match(reg)) {
         var replace_str = htmlstr.match(reg)[1]
         replace_str = Buffer.from(replace_str, 'base64').toString('utf-8')
-        htmlstr = htmlstr.replace(htmlstr.match(reg)[0],replace_str)
+        htmlstr = htmlstr.replace(htmlstr.match(reg)[0], replace_str)
     }
     return htmlstr
 }
 
 
 // 解析cloze
-parse.parseMdCloze = function (htmlstr) {
+parse.parseMdCloze = function(htmlstr, cfg) {
     const $ = this.preproccess(htmlstr)
     return $('li').map((_, item) => {
         $(item).find('code').each((_, code) => {
@@ -75,10 +75,12 @@ parse.parseMdCloze = function (htmlstr) {
 }
 
 // 解析question
-parse.parseMdQuestion = function (htmlstr) {
+parse.parseMdQuestion = function(htmlstr, cfg) {
+    const split = _.has(cfg, 'question.split') ? cfg.question.split : 'blockquote'
+    console.log(_.has(cfg, 'question'))
     const $ = this.preproccess(htmlstr)
-    return $('blockquote').map((_, blockquote) => {
-        let answer = $(blockquote).nextUntil('blockquote').map((__, answerTag) => $.html(answerTag)).get().join('');
+    return $(split).map((_, blockquote) => {
+        let answer = $(blockquote).nextUntil(split).map((__, answerTag) => $.html(answerTag)).get().join('');
         answer = this.postproccess(answer)
         let question = $(blockquote).html()
         question = this.postproccess(question)
@@ -90,7 +92,7 @@ parse.parseMdQuestion = function (htmlstr) {
 }
 
 // 解析word
-parse.parseMdWord = function (htmlstr) {
+parse.parseMdWord = function(htmlstr, cfg) {
     const $ = this.preproccess(htmlstr)
     var res = []
     return $('li').map((_, item) => {
@@ -114,7 +116,7 @@ parse.parseMdWord = function (htmlstr) {
 }
 
 // 解析clozelist
-parse.parseMdClozeList = function (htmlstr) {
+parse.parseMdClozeList = function(htmlstr, cfg) {
     const $ = this.preproccess(htmlstr)
     return $('ul').map((_, item) => {
         $(item).find('code').each((_, code) => {
