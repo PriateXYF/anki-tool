@@ -20,7 +20,6 @@ ankitool.md2txt = function (mdstr, cfg=config) {
 			const element = prasedMd[key];
 			switch (key) {
 				case 'cloze':
-				case 'clozelist':
 					res[key] = element
 					break;
 				case 'word':

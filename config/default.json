@@ -1,5 +1,16 @@
 {
+	"base" : {
+		"wrap" : true
+	},
 	"question" : {
-		"split" : "blockquote"
+		"item" : "blockquote"
+	},
+	"word" : {
+		"item" : "li",
+		"tags" : [ "code", "strong" ]
+	},
+	"cloze" : {
+		"item" : "li",
+		"tags" : [ "code", "strong" ]
 	}
 }

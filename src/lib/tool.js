@@ -4,7 +4,7 @@ const parse = require('./parse')
 var tool = {}
 
 // 所有可处理的类型
-const all_types = ['cloze', 'question', 'word', 'clozelist']
+const all_types = ['cloze', 'question', 'word']
 
 // 通过指定注释符获取各类型内容
 tool.getMdFragments = function (mdstr) {
@@ -37,12 +37,6 @@ tool.parseMd = function (item, cfg) {
                 item.content.forEach(mdstr => {
                     const word_list = parse.parseMdWord(marked.parse(mdstr), cfg)
                     res.content.push(...word_list)
-                })
-                break;
-            case 'clozelist':
-                item.content.forEach(mdstr => {
-                    const clozelist_list = parse.parseMdClozeList(marked.parse(mdstr), cfg)
-                    res.content.push(...clozelist_list)
                 })
                 break;
             default:
