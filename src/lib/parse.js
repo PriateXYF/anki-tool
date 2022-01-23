@@ -7,7 +7,7 @@ parse.preproccess = function(htmlstr){
     var $ = cheerio.load(htmlstr)
     // 处理代码
     $('code').each((_,code)=>{
-        var raw_code = $(code).html().trim().replace(/\n/g, '§').replace(/\t/g, '£')
+        var raw_code = $(code).html().trim().replace(/\n/g, '<br>').replace(/\t/g, '    ')
         raw_code = Buffer.from(raw_code, 'utf-8').toString('base64');
         $(code).html(`œœ${raw_code}œœ`)
     })

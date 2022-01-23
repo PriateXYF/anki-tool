@@ -1,6 +1,10 @@
-# Changelog
+# Change Log
 
-## v1.0.2 (2022-01-20)
+## v1.0.4 (2022-01-23)
+
+* 修复 code 换行bug
+
+## v1.0.3 (2022-01-20)
 
 * 修改 wordlist 为 clozelist
 * 完善 README.md

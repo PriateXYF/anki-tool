@@ -1,12 +1,15 @@
 {
   "name": "anki-tool",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A tool help you to make anki flashcard.",
   "main": "lib/ankitool.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["anki", "markdown"],
+  "keywords": [
+    "anki",
+    "markdown"
+  ],
   "author": "jacika",
   "license": "MIT",
   "dependencies": {
